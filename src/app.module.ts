@@ -5,6 +5,8 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConnectionsModule } from './connections/connections.module';
 import { ConfigModule } from '@nestjs/config';
+import { OobModule } from './oob/oob.module';
+import { EndorseModule } from './endorse/endorse.module';
 
 @Module({
   imports: [
@@ -18,10 +20,19 @@ import { ConfigModule } from '@nestjs/config';
           {
             path: 'connections',
             module: ConnectionsModule,
+          },
+          {
+            path: 'endorse_transaction',
+            module: EndorseModule,
+          },
+          {
+            path: 'oob_invitation',
+            module: OobModule,
           }
         ],          
       },
     ]),
+    EndorseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

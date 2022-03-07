@@ -49,6 +49,12 @@ export class ConnectionsController {
               response => console.log(response.data),
               error => console.log(error)
             );
+
+          if(payload?.connection_protocol=='didexchange/1.0') {
+            console.log(payload);
+            // Send the credential offer
+
+          }
           console.log("REQUEST DONE");
           break;
         case 'response':
