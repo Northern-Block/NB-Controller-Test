@@ -31,6 +31,7 @@ export class ConnectionsController {
         case 'request':
           console.log("request");
           // code block
+          // Respond to the connection request
           let reqResponse = 
             process.env.ADMIN_URL_ENDPOINT + 
             "/connections/" + 
@@ -50,10 +51,45 @@ export class ConnectionsController {
               error => console.log(error)
             );
 
+          // check if OOB connection
           if(payload?.connection_protocol=='didexchange/1.0') {
             console.log(payload);
-            // Send the credential offer
-
+            // Send the credential offer /issue-credential-2.0/send-offer
+            let offer = {
+              "auto_issue": true,
+              "auto_remove": true,
+              "comment": "string",
+              "connection_id": payload.connection_id,
+              "credential_preview": {
+                "@type": "issue-credential/2.0/credential-preview",
+                "attributes": [
+                      { "name": process.env.ATTRIBUTE_NAME, "value": process.env.ATTRIBUTE_VALUE}
+              ]
+              },
+              "filter": {
+                "indy": {
+                  "cred_def_id": process.env.CRED_DEF_ID,
+                  "issuer_did": process.env.ISSUER_ID,
+                  "schema_id": process.env.SCHEMA_ID,
+                  "schema_issuer_did": process.env.SCHEMA_ISSUER_DID,
+                  "schema_name": process.env.SCHEMA_NAME,
+                  "schema_version": process.env.SCHEMA_VERSION
+                }
+              }
+            }
+            let request = process.env.ADMIN_URL_ENDPOINT + "/issue-credential-2.0/send-offer";
+            console.log(request);
+            let headerRequest = { 
+              "Authorization" : 'Bearer ' + process.env.WALLET_TOKEN,
+              "X-API-KEY" : process.env.X_API_KEY,
+              "accept" : "application/json"
+            };
+            console.log(headerRequest);
+            this.httpService.post(request, '', {headers: headerRequest})
+            .subscribe(
+              response => console.log(response.data),
+              error => console.log(error)
+            );
           }
           console.log("REQUEST DONE");
           break;
@@ -75,7 +111,7 @@ export class ConnectionsController {
         default:
           // code block
       }
-      return `Hello From Connections`;
+      return 'Connections';
   }
 
 }
